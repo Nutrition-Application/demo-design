@@ -1,0 +1,295 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Health Dashboard</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        /* Custom scrollbar */
+        ::-webkit-scrollbar {
+            width: 5px;
+            height: 5px;
+        }
+        ::-webkit-scrollbar-track {
+            background: #f1f1f1;
+            border-radius: 10px;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #888;
+            border-radius: 10px;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: #555;
+        }
+        
+        /* Animation for weight input */
+        @keyframes pulse {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.05); }
+            100% { transform: scale(1); }
+        }
+        .pulse-animation {
+            animation: pulse 1.5s infinite;
+        }
+    </style>
+</head>
+<body class="bg-gray-100 font-sans">
+    <!-- Mobile container -->
+    <div class="relative max-w-md mx-auto min-h-screen bg-white shadow-lg overflow-hidden">
+        <!-- Header -->
+        <header class="bg-gradient-to-r from-blue-500 to-purple-600 text-white p-4">
+            <div class="flex justify-between items-center">
+                <button class="text-white">
+                    <i class="fas fa-arrow-left text-xl"></i>
+                </button>
+                <h1 class="text-xl font-bold">Health Dashboard</h1>
+                <button class="text-white">
+                    <i class="fas fa-cog text-xl"></i>
+                </button>
+            </div>
+        </header>
+
+        <!-- Main content -->
+        <main class="p-4 pb-20">
+            <!-- Current stats -->
+            <div class="bg-white rounded-xl shadow-md p-4 mb-4">
+                <div class="flex justify-between items-center mb-2">
+                    <h2 class="text-lg font-semibold text-gray-800">Today's Stats</h2>
+                    <span class="text-xs text-gray-500">Updated: Just now</span>
+                </div>
+                
+                <div class="grid grid-cols-3 gap-2 text-center">
+                    <div class="bg-blue-50 p-2 rounded-lg">
+                        <p class="text-xs text-blue-600">Weight</p>
+                        <p class="font-bold text-blue-800">68.5 kg</p>
+                    </div>
+                    <div class="bg-green-50 p-2 rounded-lg">
+                        <p class="text-xs text-green-600">Calories</p>
+                        <p class="font-bold text-green-800">1,850 kcal</p>
+                    </div>
+                    <div class="bg-purple-50 p-2 rounded-lg">
+                        <p class="text-xs text-purple-600">Goal</p>
+                        <p class="font-bold text-purple-800">2,000 kcal</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Weight input section -->
+            <div class="bg-white rounded-xl shadow-md p-4 mb-6">
+                <h2 class="text-lg font-semibold text-gray-800 mb-3">Update Weight</h2>
+                <div class="flex items-center justify-between">
+                    <div class="relative flex-1 mr-3">
+                        <input 
+                            type="number" 
+                            id="weightInput" 
+                            placeholder="Enter weight (kg)" 
+                            class="w-full p-3 border-2 border-blue-300 rounded-lg focus:outline-none focus:border-blue-500 focus:ring-1 focus:ring-blue-200 transition-all"
+                            step="0.1"
+                            min="30"
+                            max="200"
+                        >
+                        <span class="absolute right-3 top-3 text-gray-400">kg</span>
+                    </div>
+                    <button id="updateWeightBtn" class="bg-blue-500 hover:bg-blue-600 text-white font-medium py-3 px-4 rounded-lg flex items-center justify-center transition-all pulse-animation">
+                        <i class="fas fa-plus mr-1"></i> Add
+                    </button>
+                </div>
+                <div class="mt-2 text-xs text-gray-500 flex items-center">
+                    <i class="fas fa-info-circle mr-1 text-blue-400"></i>
+                    <span>Last update: 68.2 kg (2 days ago)</span>
+                </div>
+            </div>
+
+            <!-- Weight chart -->
+            <div class="bg-white rounded-xl shadow-md p-4 mb-6">
+                <div class="flex justify-between items-center mb-3">
+                    <h2 class="text-lg font-semibold text-gray-800">Weight Trend</h2>
+                    <div class="flex space-x-2">
+                        <button class="text-xs bg-gray-100 hover:bg-gray-200 px-2 py-1 rounded">Week</button>
+                        <button class="text-xs bg-blue-100 text-blue-600 px-2 py-1 rounded">Month</button>
+                        <button class="text-xs bg-gray-100 hover:bg-gray-200 px-2 py-1 rounded">Year</button>
+                    </div>
+                </div>
+                <div class="h-48">
+                    <canvas id="weightChart"></canvas>
+                </div>
+                <div class="mt-2 text-xs text-gray-500 flex justify-between">
+                    <span>Start: 70.2 kg</span>
+                    <span>Current: 68.5 kg</span>
+                    <span>Change: -1.7 kg</span>
+                </div>
+            </div>
+
+            <!-- Calories chart -->
+            <div class="bg-white rounded-xl shadow-md p-4">
+                <div class="flex justify-between items-center mb-3">
+                    <h2 class="text-lg font-semibold text-gray-800">Calories Intake</h2>
+                    <div class="flex space-x-2">
+                        <button class="text-xs bg-gray-100 hover:bg-gray-200 px-2 py-1 rounded">Week</button>
+                        <button class="text-xs bg-blue-100 text-blue-600 px-2 py-1 rounded">Month</button>
+                        <button class="text-xs bg-gray-100 hover:bg-gray-200 px-2 py-1 rounded">Year</button>
+                    </div>
+                </div>
+                <div class="h-48">
+                    <canvas id="caloriesChart"></canvas>
+                </div>
+                <div class="mt-2 text-xs text-gray-500 flex justify-between">
+                    <span>Avg: 1,920 kcal</span>
+                    <span>Today: 1,850 kcal</span>
+                    <span>Goal: 2,000 kcal</span>
+                </div>
+            </div>
+        </main>
+
+        <!-- Bottom navigation -->
+        <nav class="fixed bottom-0 left-0 right-0 max-w-md mx-auto bg-white shadow-lg border-t border-gray-200 flex justify-around p-2">
+            <a href="#" class="text-gray-400 p-2 flex flex-col items-center">
+                <i class="fas fa-home text-xl"></i>
+                <span class="text-xs mt-1">Home</span>
+            </a>
+            <a href="#" class="text-blue-500 p-2 flex flex-col items-center">
+                <i class="fas fa-chart-line text-xl"></i>
+                <span class="text-xs mt-1">Stats</span>
+            </a>
+            <a href="#" class="text-gray-400 p-2 flex flex-col items-center">
+                <i class="fas fa-utensils text-xl"></i>
+                <span class="text-xs mt-1">Food</span>
+            </a>
+            <a href="#" class="text-gray-400 p-2 flex flex-col items-center">
+                <i class="fas fa-user text-xl"></i>
+                <span class="text-xs mt-1">Profile</span>
+            </a>
+        </nav>
+    </div>
+
+    <script>
+        // Sample data for charts
+        const weightData = {
+            labels: ['1', '5', '10', '15', '20', '25', '30'],
+            datasets: [{
+                label: 'Weight (kg)',
+                data: [70.2, 69.8, 69.5, 69.1, 68.9, 68.7, 68.5],
+                borderColor: '#3b82f6',
+                backgroundColor: 'rgba(59, 130, 246, 0.1)',
+                borderWidth: 2,
+                tension: 0.3,
+                fill: true
+            }]
+        };
+
+        const caloriesData = {
+            labels: ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'],
+            datasets: [{
+                label: 'Consumed',
+                data: [1950, 2100, 1850, 2200, 1900, 2300, 1850],
+                backgroundColor: 'rgba(74, 222, 128, 0.7)',
+                borderColor: 'rgba(74, 222, 128, 1)',
+                borderWidth: 1
+            }, {
+                label: 'Goal',
+                data: [2000, 2000, 2000, 2000, 2000, 2000, 2000],
+                backgroundColor: 'rgba(249, 168, 212, 0.2)',
+                borderColor: 'rgba(249, 168, 212, 1)',
+                borderWidth: 1,
+                type: 'line',
+                tension: 0,
+                pointRadius: 0
+            }]
+        };
+
+        // Initialize charts
+        document.addEventListener('DOMContentLoaded', function() {
+            // Weight Chart
+            const weightCtx = document.getElementById('weightChart').getContext('2d');
+            new Chart(weightCtx, {
+                type: 'line',
+                data: weightData,
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: {
+                            display: false
+                        }
+                    },
+                    scales: {
+                        y: {
+                            beginAtZero: false,
+                            min: 67,
+                            max: 71,
+                            grid: {
+                                color: 'rgba(0, 0, 0, 0.05)'
+                            }
+                        },
+                        x: {
+                            grid: {
+                                display: false
+                            }
+                        }
+                    }
+                }
+            });
+
+            // Calories Chart
+            const caloriesCtx = document.getElementById('caloriesChart').getContext('2d');
+            new Chart(caloriesCtx, {
+                type: 'bar',
+                data: caloriesData,
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: {
+                            display: false
+                        }
+                    },
+                    scales: {
+                        y: {
+                            beginAtZero: true,
+                            max: 2500,
+                            grid: {
+                                color: 'rgba(0, 0, 0, 0.05)'
+                            }
+                        },
+                        x: {
+                            grid: {
+                                display: false
+                            }
+                        }
+                    }
+                }
+            });
+
+            // Weight input functionality
+            const weightInput = document.getElementById('weightInput');
+            const updateWeightBtn = document.getElementById('updateWeightBtn');
+            
+            updateWeightBtn.addEventListener('click', function() {
+                const weight = parseFloat(weightInput.value);
+                if (isNaN(weight) || weight < 30 || weight > 200) {
+                    alert('Please enter a valid weight between 30 and 200 kg');
+                    return;
+                }
+                
+                // Animation effect
+                updateWeightBtn.classList.remove('pulse-animation');
+                updateWeightBtn.innerHTML = '<i class="fas fa-check mr-1"></i> Updated';
+                updateWeightBtn.classList.add('bg-green-500', 'hover:bg-green-600');
+                
+                setTimeout(() => {
+                    updateWeightBtn.innerHTML = '<i class="fas fa-plus mr-1"></i> Add';
+                    updateWeightBtn.classList.remove('bg-green-500', 'hover:bg-green-600');
+                    updateWeightBtn.classList.add('pulse-animation');
+                    weightInput.value = '';
+                }, 2000);
+                
+                // In a real app, you would send this data to your backend
+                console.log('Weight updated to:', weight, 'kg');
+            });
+        });
+    </script>
+</body>
+</html>

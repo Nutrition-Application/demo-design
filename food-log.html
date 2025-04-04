@@ -1,0 +1,343 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Food Logger</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        /* Custom styles for the health score slider */
+        input[type="range"]::-webkit-slider-thumb {
+            -webkit-appearance: none;
+            width: 20px;
+            height: 20px;
+            border-radius: 50%;
+            background: #10b981;
+            cursor: pointer;
+        }
+        
+        .health-score-0 { background-color: #ef4444; }
+        .health-score-1 { background-color: #f97316; }
+        .health-score-2 { background-color: #f59e0b; }
+        .health-score-3 { background-color: #eab308; }
+        .health-score-4 { background-color: #84cc16; }
+        .health-score-5 { background-color: #22c55e; }
+        .health-score-6 { background-color: #10b981; }
+        .health-score-7 { background-color: #14b8a6; }
+        .health-score-8 { background-color: #06b6d4; }
+        .health-score-9 { background-color: #0ea5e9; }
+        .health-score-10 { background-color: #3b82f6; }
+        
+        /* Animation for AI button */
+        @keyframes pulse {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.05); }
+            100% { transform: scale(1); }
+        }
+        
+        .ai-pulse {
+            animation: pulse 2s infinite;
+        }
+        
+        /* Custom scrollbar for ingredients */
+        .ingredients-list::-webkit-scrollbar {
+            width: 6px;
+        }
+        
+        .ingredients-list::-webkit-scrollbar-track {
+            background: #f1f1f1;
+            border-radius: 10px;
+        }
+        
+        .ingredients-list::-webkit-scrollbar-thumb {
+            background: #cbd5e1;
+            border-radius: 10px;
+        }
+        
+        .ingredients-list::-webkit-scrollbar-thumb:hover {
+            background: #94a3b8;
+        }
+    </style>
+</head>
+<body class="bg-gray-50 font-sans">
+    <div class="max-w-md mx-auto bg-white min-h-screen shadow-lg">
+        <!-- Header -->
+        <header class="bg-blue-600 text-white p-4 sticky top-0 z-10">
+            <div class="flex items-center justify-between">
+                <button class="text-white">
+                    <i class="fas fa-arrow-left text-xl"></i>
+                </button>
+                <h1 class="text-xl font-bold">Log Food</h1>
+                <button class="text-white">
+                    <i class="fas fa-check text-xl"></i>
+                </button>
+            </div>
+        </header>
+        
+        <main class="p-4 pb-20">
+            <!-- Image Section -->
+            <div class="mb-6">
+                <div class="relative group">
+                    <div id="foodImage" class="w-full h-48 bg-gray-200 rounded-xl flex items-center justify-center overflow-hidden">
+                        <i class="fas fa-camera text-4xl text-gray-400"></i>
+                        <img id="uploadedImage" src="" alt="Food image" class="hidden w-full h-full object-cover">
+                    </div>
+                    <input type="file" id="imageUpload" accept="image/*" class="hidden">
+                    <!-- <button onclick="document.getElementById('imageUpload').click()" 
+                            class="absolute bottom-3 right-3 bg-white p-2 rounded-full shadow-lg group-hover:bg-blue-100 transition">
+                        <i class="fas fa-pencil-alt text-blue-600"></i>
+                    </button> -->
+                </div>
+            </div>
+            
+            <!-- Food Name with AI Button -->
+            <div class="mb-6 relative">
+                <label for="foodName" class="block text-sm font-medium text-gray-700 mb-1">Food Name</label>
+                <div class="flex">
+                    <input type="text" id="foodName" placeholder="e.g. Chicken Salad" 
+                           class="flex-1 p-3 border border-gray-300 rounded-l-lg focus:ring-2  outline-none">
+                    <button id="aiButton" class="bg-blue-600 text-white px-4 rounded-r-lg ">
+                        <i class="fas fa-robot"></i> AI
+                    </button>
+                </div>
+            </div>
+            
+            <!-- Quantity -->
+            <!-- <div class="mb-6">
+                <label for="quantity" class="block text-sm font-medium text-gray-700 mb-1">Quantity</label>
+                <div class="flex items-center">
+                    <input type="number" id="quantity" min="1" value="1" 
+                           class="flex-1 p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500 outline-none">
+                    <select class="ml-2 p-3 border border-gray-300 rounded-lg bg-white">
+                        <option>serving</option>
+                        <option>g</option>
+                        <option>ml</option>
+                        <option>oz</option>
+                        <option>cup</option>
+                    </select>
+                </div>
+            </div> -->
+            
+            <!-- Nutritional Info -->
+            <div class="grid grid-cols-2 gap-4 mb-6">
+                <div class="bg-blue-50 p-3 rounded-lg">
+                    <div class="text-sm text-blue-600">Calories</div>
+                    <div class="font-bold text-lg">250 <span class="text-sm font-normal">kcal</span></div>
+                </div>
+                <div class="bg-green-50 p-3 rounded-lg">
+                    <div class="text-sm text-green-600">Protein</div>
+                    <div class="font-bold text-lg">20 <span class="text-sm font-normal">g</span></div>
+                </div>
+                <div class="bg-yellow-50 p-3 rounded-lg">
+                    <div class="text-sm text-yellow-600">Carbs</div>
+                    <div class="font-bold text-lg">30 <span class="text-sm font-normal">g</span></div>
+                </div>
+                <div class="bg-red-50 p-3 rounded-lg">
+                    <div class="text-sm text-red-600">Fat</div>
+                    <div class="font-bold text-lg">10 <span class="text-sm font-normal">g</span></div>
+                </div>
+            </div>
+            
+            <!-- Health Score -->
+            <div class="mb-6">
+                <div class="flex justify-between items-center mb-1">
+                    <label class="text-sm font-medium text-gray-700">Health Score</label>
+                    <span id="healthScoreValue" class="px-2 py-1 rounded-full text-xs font-bold text-white health-score-7">7</span>
+                </div>
+                <input type="range" id="healthScore" min="0" max="10" value="7" 
+                       class="w-full h-2 bg-gray-200 rounded-lg appearance-none cursor-pointer">
+                <div class="flex justify-between text-xs text-gray-500 mt-1">
+                    <span>Unhealthy</span>
+                    <span>Neutral</span>
+                    <span>Healthy</span>
+                </div>
+            </div>
+            
+            <!-- Ingredients -->
+            <div class="mb-6">
+                <div class="flex justify-between items-center mb-2">
+                    <label class="text-sm font-medium text-gray-700">Ingredients</label>
+                    <button id="addIngredientBtn" class="text-blue-600 hover:text-emerald-800">
+                        <i class="fas fa-plus"></i> Add
+                    </button>
+                </div>
+                <div id="ingredientsList" class="ingredients-list max-h-40 overflow-y-auto border border-gray-200 rounded-lg p-2">
+                    <div class="ingredient-item flex justify-between items-center py-2 px-3 bg-gray-50 rounded mb-2">
+                        <span>Chicken breast</span>
+                        <button class="text-red-500 hover:text-red-700">
+                            <i class="fas fa-times"></i>
+                        </button>
+                    </div>
+                    <div class="ingredient-item flex justify-between items-center py-2 px-3 bg-gray-50 rounded mb-2">
+                        <span>Lettuce</span>
+                        <button class="text-red-500 hover:text-red-700">
+                            <i class="fas fa-times"></i>
+                        </button>
+                    </div>
+                    <div class="ingredient-item flex justify-between items-center py-2 px-3 bg-gray-50 rounded mb-2">
+                        <span>Tomatoes</span>
+                        <button class="text-red-500 hover:text-red-700">
+                            <i class="fas fa-times"></i>
+                        </button>
+                    </div>
+                    <div class="ingredient-item flex justify-between items-center py-2 px-3 bg-gray-50 rounded mb-2">
+                        <span>Olive oil</span>
+                        <button class="text-red-500 hover:text-red-700">
+                            <i class="fas fa-times"></i>
+                        </button>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Save Button -->
+            <button class="w-full bg-blue-600 text-white py-3 rounded-lg font-bold hover:bg-emerald-700 transition mt-6">
+                Save Food Entry
+            </button>
+        </main>
+        
+        <!-- Add Ingredient Modal -->
+        <div id="addIngredientModal" class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center hidden z-20">
+            <div class="bg-white rounded-lg p-6 w-full max-w-sm mx-4">
+                <div class="flex justify-between items-center mb-4">
+                    <h3 class="text-lg font-bold">Add Ingredient</h3>
+                    <button id="closeModalBtn" class="text-gray-500 hover:text-gray-700">
+                        <i class="fas fa-times"></i>
+                    </button>
+                </div>
+                <input type="text" id="newIngredient" placeholder="Enter ingredient name" 
+                       class="w-full p-3 border border-gray-300 rounded-lg mb-4 focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500 outline-none">
+                <button id="saveIngredientBtn" class="w-full bg-emerald-600 text-white py-2 rounded-lg font-bold hover:bg-emerald-700 transition">
+                    Add Ingredient
+                </button>
+            </div>
+        </div>
+        
+        <!-- AI Processing Modal -->
+        <div id="aiModal" class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center hidden z-20">
+            <div class="bg-white rounded-lg p-6 w-full max-w-sm mx-4">
+                <div class="text-center">
+                    <div class="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-emerald-500 mx-auto mb-4"></div>
+                    <h3 class="text-lg font-bold mb-2">Analyzing with AI</h3>
+                    <p class="text-gray-600">We're analyzing your food image to automatically fill in the details...</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Handle image upload preview
+        document.getElementById('imageUpload').addEventListener('change', function(e) {
+            const file = e.target.files[0];
+            if (file) {
+                const reader = new FileReader();
+                reader.onload = function(event) {
+                    document.getElementById('uploadedImage').src = event.target.result;
+                    document.getElementById('uploadedImage').classList.remove('hidden');
+                    document.querySelector('#foodImage i').classList.add('hidden');
+                }
+                reader.readAsDataURL(file);
+            }
+        });
+        
+        // Update health score display
+        const healthScore = document.getElementById('healthScore');
+        const healthScoreValue = document.getElementById('healthScoreValue');
+        
+        healthScore.addEventListener('input', function() {
+            const value = this.value;
+            healthScoreValue.textContent = value;
+            
+            // Remove all color classes
+            for (let i = 0; i <= 10; i++) {
+                healthScoreValue.classList.remove(`health-score-${i}`);
+            }
+            
+            // Add the appropriate color class
+            healthScoreValue.classList.add(`health-score-${value}`);
+        });
+        
+        // Handle ingredient modal
+        const addIngredientBtn = document.getElementById('addIngredientBtn');
+        const addIngredientModal = document.getElementById('addIngredientModal');
+        const closeModalBtn = document.getElementById('closeModalBtn');
+        const saveIngredientBtn = document.getElementById('saveIngredientBtn');
+        const newIngredient = document.getElementById('newIngredient');
+        const ingredientsList = document.getElementById('ingredientsList');
+        
+        addIngredientBtn.addEventListener('click', function() {
+            addIngredientModal.classList.remove('hidden');
+            newIngredient.focus();
+        });
+        
+        closeModalBtn.addEventListener('click', function() {
+            addIngredientModal.classList.add('hidden');
+            newIngredient.value = '';
+        });
+        
+        saveIngredientBtn.addEventListener('click', function() {
+            const ingredient = newIngredient.value.trim();
+            if (ingredient) {
+                const ingredientItem = document.createElement('div');
+                ingredientItem.className = 'ingredient-item flex justify-between items-center py-2 px-3 bg-gray-50 rounded mb-2';
+                ingredientItem.innerHTML = `
+                    <span>${ingredient}</span>
+                    <button class="text-red-500 hover:text-red-700 remove-ingredient">
+                        <i class="fas fa-times"></i>
+                    </button>
+                `;
+                ingredientsList.appendChild(ingredientItem);
+                newIngredient.value = '';
+                addIngredientModal.classList.add('hidden');
+                
+                // Add event listener to the new remove button
+                ingredientItem.querySelector('.remove-ingredient').addEventListener('click', function() {
+                    ingredientItem.remove();
+                });
+            }
+        });
+        
+        // Add event listeners to existing remove buttons
+        document.querySelectorAll('.ingredient-item button').forEach(button => {
+            button.addEventListener('click', function() {
+                this.closest('.ingredient-item').remove();
+            });
+        });
+        
+        // Handle AI button click
+        document.getElementById('aiButton').addEventListener('click', function() {
+            const aiModal = document.getElementById('aiModal');
+            aiModal.classList.remove('hidden');
+            
+            // Simulate AI processing
+            setTimeout(function() {
+                aiModal.classList.add('hidden');
+                
+                // Fill in some example data (in a real app, this would come from the AI)
+                document.getElementById('foodName').value = 'Chicken Caesar Salad';
+                document.getElementById('quantity').value = '1';
+                
+                // Show success message
+                const notification = document.createElement('div');
+                notification.className = 'fixed top-20 right-4 bg-emerald-500 text-white px-4 py-2 rounded-lg shadow-lg flex items-center';
+                notification.innerHTML = `
+                    <i class="fas fa-check-circle mr-2"></i>
+                    <span>AI has filled in the details!</span>
+                `;
+                document.body.appendChild(notification);
+                
+                setTimeout(() => {
+                    notification.remove();
+                }, 3000);
+            }, 2000);
+        });
+        
+        // Allow pressing Enter in the ingredient input
+        newIngredient.addEventListener('keypress', function(e) {
+            if (e.key === 'Enter') {
+                saveIngredientBtn.click();
+            }
+        });
+    </script>
+</body>
+</html>
