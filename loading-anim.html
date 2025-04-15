@@ -6,11 +6,129 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Document</title>
     <script src="https://unpkg.com/@dotlottie/player-component@2.7.12/dist/dotlottie-player.mjs" type="module"></script>
+    <style>
+        @font-face {
+            font-family: GoogleSans-Bold;
+            src: url(./fonts/GoogleSans-Bold.ttf);
+        }
+
+        @font-face {
+            font-family: GoogleSans-Regular;
+            src: url(./fonts/GoogleSans-Regular.ttf);
+        }
+
+        @font-face {
+            font-family: GoogleSans-Medium;
+            src: url(./fonts/GoogleSans-Medium.ttf);
+        }
+
+        /* From Uiverse.io by kennyotsu */
+        .loader {
+            color: rgb(124, 124, 124);
+            font-family: "GoogleSans-Bold", sans-serif;
+            -webkit-box-sizing: content-box;
+            box-sizing: content-box;
+            height: 40px;
+            padding: 10px 10px;
+            display: -webkit-box;
+            display: -ms-flexbox;
+            display: flex;
+            border-radius: 8px;
+        }
+
+        .words {
+            overflow: hidden;
+            position: relative;
+        }
+
+        .words::after {
+            content: "";
+            position: absolute;
+            inset: 0;
+            background: linear-gradient(var(--bg-color) 10%,
+                    transparent 30%,
+                    transparent 70%,
+                    var(--bg-color) 90%);
+            z-index: 20;
+        }
+
+        .word {
+            display: block;
+            height: 100%;
+            padding-left: 6px;
+            color: #3b82f6;
+            animation: spin_4991 4s infinite;
+        }
+
+        @keyframes spin_4991 {
+            10% {
+                -webkit-transform: translateY(-102%);
+                transform: translateY(-102%);
+            }
+
+            25% {
+                -webkit-transform: translateY(-100%);
+                transform: translateY(-100%);
+            }
+
+            35% {
+                -webkit-transform: translateY(-202%);
+                transform: translateY(-202%);
+            }
+
+            50% {
+                -webkit-transform: translateY(-200%);
+                transform: translateY(-200%);
+            }
+
+            60% {
+                -webkit-transform: translateY(-302%);
+                transform: translateY(-302%);
+            }
+
+            75% {
+                -webkit-transform: translateY(-300%);
+                transform: translateY(-300%);
+            }
+
+            85% {
+                -webkit-transform: translateY(-402%);
+                transform: translateY(-402%);
+            }
+
+            100% {
+                -webkit-transform: translateY(-400%);
+                transform: translateY(-400%);
+            }
+        }
+    </style>
+    <script src="lib/tailwind.js"></script>
 </head>
 
-<body style="overflow: hidden; display: flex; justify-content: center; align-items: center; width: 100vw; height: 100vh;">
-    <dotlottie-player src="https://lottie.host/c7a960fa-05ef-460a-bd46-52f033d922f9/YnBYcaITf6.lottie"
-        background="transparent" speed="1" style="width: 200px; height: 200px; scale: 12;" loop autoplay></dotlottie-player>
+<body class="overflow-hidden w-screen h-screen">
+    <div class="flex flex-col h-full w-full items-center justify-center gap-3 px-5">
+        <dotlottie-player src="https://lottie.host/c7a960fa-05ef-460a-bd46-52f033d922f9/YnBYcaITf6.lottie"
+            background="transparent" speed="1" style="width: 200px; height: 200px; scale: 5;" loop
+            autoplay></dotlottie-player>
+
+        <!-- From Uiverse.io by kennyotsu -->
+        <div class="card mt-7">
+            <div class="loader text-3xl">
+                <p>loading</p>
+                <div class="words">
+                    <span class="word">Data</span>
+                    <span class="word">Users</span>
+                    <span class="word">Foods</span>
+                    <span class="word">Exercises</span>
+                    <span class="word">UI</span>
+                </div>
+            </div>
+        </div>
+
+        <p class="text-md text-center text-gray-500 font-[GoogleSans-Regular]">
+            We're preparing something amazing for you. Just a moment while we get everything ready!
+        </p>
+    </div>
 </body>
 
 </html>
