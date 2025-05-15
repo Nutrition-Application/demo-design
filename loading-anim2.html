@@ -1,3 +1,4 @@
+<!DOCTYPE html>
 <html lang="en" class="overflow-hidden">
 
 <head>
@@ -101,33 +102,33 @@
             }
         }
     </style>
-    <script src="lib/tailwind.js"></script>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 </head>
 
 <body class="overflow-hidden w-screen h-screen">
-    <div class="flex flex-col h-full w-full items-center justify-center gap-3 px-5">
+    <div class="relative max-w-md mx-auto min-h-screen flex flex-col items-center justify-center overflow-hidden">
         <!-- <dotlottie-player src="./lib/loading.lottie"
             background="transparent" speed="1" style="width: 200px; height: 200px; scale: 5;" loop
             autoplay></dotlottie-player> -->
         <image src="./assets/loading.gif" class="scale-[5]" alt="loading" width="200" height="200">
 
-        <!-- From Uiverse.io by kennyotsu -->
-        <div class="card mt-7">
-            <div class="loader text-3xl">
-                <p>loading</p>
-                <div class="words">
-                    <span class="word">Data</span>
-                    <span class="word">Users</span>
-                    <span class="word">Foods</span>
-                    <span class="word">Exercises</span>
-                    <span class="word">UI</span>
+            <div class="card mt-7">
+                <div class="loader text-3xl">
+                    <p>loading</p>
+                    <div class="words">
+                        <span class="word">Data</span>
+                        <span class="word">Users</span>
+                        <span class="word">Foods</span>
+                        <span class="word">Exercises</span>
+                        <span class="word">UI</span>
+                    </div>
                 </div>
             </div>
-        </div>
 
-        <p class="text-md text-center text-gray-500 font-[GoogleSans-Regular]">
-            We're preparing something amazing for you. Just a moment while we get everything ready!
-        </p>
+            <p class="text-md text-center text-gray-500 font-[GoogleSans-Regular]">
+                We're preparing something amazing for you. Just a moment while we get everything ready!
+            </p>
     </div>
 </body>
 
